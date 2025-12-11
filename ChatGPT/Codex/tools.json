@@ -1,0 +1,180 @@
+ [
+    {
+      "type": "function",
+      "name": "shell",
+      "function": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "The command to execute"
+            },
+            "justification": {
+              "type": "string",
+              "description": "Only set if sandbox_permissions is \"require_escalated\". 1-sentence explanation of why we want to run this command."
+            },
+            "sandbox_permissions": {
+              "type": "string",
+              "description": "Sandbox permissions for the command. Set to \"require_escalated\" to request running without sandbox restrictions; defaults to \"use_default\"."
+            },
+            "timeout_ms": {
+              "type": "number",
+              "description": "The timeout for the command in milliseconds"
+            },
+            "workdir": {
+              "type": "string",
+              "description": "The working directory to execute the command in"
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "additionalProperties": false
+        },
+        "name": "shell",
+        "description": "Runs a Powershell command (Windows) and returns its output. Arguments to `shell` will be passed to CreateProcessW(). Most commands should be prefixed with [\"powershell.exe\", \"-Command\"].\n        \nExamples of valid command strings:\n\n- ls -a (show hidden): [\"powershell.exe\", \"-Command\", \"Get-ChildItem -Force\"]\n- recursive find by name: [\"powershell.exe\", \"-Command\", \"Get-ChildItem -Recurse -Filter *.py\"]\n- recursive grep: [\"powershell.exe\", \"-Command\", \"Get-ChildItem -Path C:\\\\myrepo -Recurse | Select-String -Pattern 'TODO' -CaseSensitive\"]\n- ps aux | grep python: [\"powershell.exe\", \"-Command\", \"Get-Process | Where-Object { $_.ProcessName -like '*python*' }\"]\n- setting an env var: [\"powershell.exe\", \"-Command\", \"$env:FOO='bar'; echo $env:FOO\"]\n- running an inline Python script: [\"powershell.exe\", \"-Command\", \"@'\\\\nprint('Hello, world!')\\\\n'@ | python -\"]",
+        "strict": false
+      }
+    },
+    {
+      "type": "function",
+      "name": "list_mcp_resources",
+      "function": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "cursor": {
+              "type": "string",
+              "description": "Opaque cursor returned by a previous list_mcp_resources call for the same server."
+            },
+            "server": {
+              "type": "string",
+              "description": "Optional MCP server name. When omitted, lists resources from every configured server."
+            }
+          },
+          "additionalProperties": false
+        },
+        "name": "list_mcp_resources",
+        "description": "Lists resources provided by MCP servers. Resources allow servers to share data that provides context to language models, such as files, database schemas, or application-specific information. Prefer resources over web search when possible.",
+        "strict": false
+      }
+    },
+    {
+      "type": "function",
+      "name": "list_mcp_resource_templates",
+      "function": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "cursor": {
+              "type": "string",
+              "description": "Opaque cursor returned by a previous list_mcp_resource_templates call for the same server."
+            },
+            "server": {
+              "type": "string",
+              "description": "Optional MCP server name. When omitted, lists resource templates from all configured servers."
+            }
+          },
+          "additionalProperties": false
+        },
+        "name": "list_mcp_resource_templates",
+        "description": "Lists resource templates provided by MCP servers. Parameterized resource templates allow servers to share data that takes parameters and provides context to language models, such as files, database schemas, or application-specific information. Prefer resource templates over web search when possible.",
+        "strict": false
+      }
+    },
+    {
+      "type": "function",
+      "name": "read_mcp_resource",
+      "function": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "server": {
+              "type": "string",
+              "description": "MCP server name exactly as configured. Must match the 'server' field returned by list_mcp_resources."
+            },
+            "uri": {
+              "type": "string",
+              "description": "Resource URI to read. Must be one of the URIs returned by list_mcp_resources."
+            }
+          },
+          "required": [
+            "server",
+            "uri"
+          ],
+          "additionalProperties": false
+        },
+        "name": "read_mcp_resource",
+        "description": "Read a specific resource from an MCP server given the server name and resource URI.",
+        "strict": false
+      }
+    },
+    {
+      "type": "function",
+      "name": "update_plan",
+      "function": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "explanation": {
+              "type": "string"
+            },
+            "plan": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "description": "One of: pending, in_progress, completed"
+                  },
+                  "step": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "step",
+                  "status"
+                ],
+                "additionalProperties": false
+              },
+              "description": "The list of steps"
+            }
+          },
+          "required": [
+            "plan"
+          ],
+          "additionalProperties": false
+        },
+        "name": "update_plan",
+        "description": "Updates the task plan.\nProvide an optional explanation and a list of plan items, each with a step and status.\nAt most one step can be in_progress at a time.\n",
+        "strict": false
+      }
+    },
+    {
+      "type": "function",
+      "name": "view_image",
+      "function": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Local filesystem path to an image file"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        "name": "view_image",
+        "description": "Attach a local image (by filesystem path) to the conversation context for this turn.",
+        "strict": false
+      }
+    }
+  ]
